@@ -6,10 +6,30 @@ LABEL author "Devtools <devtools@redhat.com>"
 ENV USER_UID=1001 \
     USER_NAME=toolchain-cicd \
     LANG=en_US.utf8 \
-    OPM_VERSION=v1.12.5
+    OPM_VERSION=v1.12.5 \
+    OPERATOR_SDK_VERSION=v0.19.2
 
 RUN apk add --update \
-    curl make cmake bash
+    curl \
+    make \
+    cmake \
+    bash \
+    git \
+    python3 \
+    py3-pip \
+    jq
+
+
+RUN pip3 install yq
+
+RUN curl -L -s https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_VERSION}/operator-sdk-${OPERATOR_SDK_VERSION}-x86_64-linux-gnu -o operator-sdk \
+    && curl -L -s https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_VERSION}/operator-sdk-${OPERATOR_SDK_VERSION}-x86_64-linux-gnu.asc -o operator-sdk.asc \
+    && gpg --keyserver keyserver.ubuntu.com --recv-key 9AF46519 \
+    && gpg --verify operator-sdk.asc \
+    && chmod +x operator-sdk \
+    && cp operator-sdk /usr/bin/operator-sdk \
+    && rm operator-sdk \
+    && operator-sdk version
 
 RUN curl -Lo opm https://github.com/operator-framework/operator-registry/releases/download/${OPM_VERSION}/linux-amd64-opm
 RUN chmod +x opm \

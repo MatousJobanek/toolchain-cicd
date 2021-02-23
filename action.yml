@@ -1,0 +1,15 @@
+name: 'Sandbox operator release'
+description: 'Release a new version of sandbox operator'
+inputs:
+  quay-namespace:
+    description: 'quay namespace'
+    required: true
+    default: 'codeready-toolchain'
+#outputs:
+#  time: # id of output
+#    description: 'The time we greeted you'
+runs:
+  using: 'docker'
+  image: 'Dockerfile.tools'
+  args:
+  - ${{ inputs.quay-namespace }}
