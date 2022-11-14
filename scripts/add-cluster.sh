@@ -28,7 +28,7 @@ login_to_cluster() {
       else
         REGISTER_SERVER_API=$(yq -r .\"$1\".serverAPI ${SANDBOX_CONFIG})
         REGISTER_SA_TOKEN=$(yq -r .\"$1\".tokens.registerCluster ${SANDBOX_CONFIG})
-        OC_ADDITIONAL_PARAMS="--token=${REGISTER_SA_TOKEN} --server=${REGISTER_SERVER_API}"
+        OC_ADDITIONAL_PARAMS="--token=${REGISTER_SA_TOKEN} --server=${REGISTER_SERVER_API} --kubeconfig ${HOME}/.kube/sandbox-cli-config"
       fi
     fi
 }
