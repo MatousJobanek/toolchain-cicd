@@ -28,14 +28,14 @@ login_to_cluster() {
       else
         REGISTER_SERVER_API=$(yq -r .\"$1\".serverAPI ${SANDBOX_CONFIG})
         REGISTER_SA_TOKEN=$(yq -r .\"$1\".tokens.registerCluster ${SANDBOX_CONFIG})
-        OC_ADDITIONAL_PARAMS="--token=${REGISTER_SA_TOKEN} --server=${REGISTER_SERVER_API} --kubeconfig ${HOME}/.kube/sandbox-cli-config"
+        OC_ADDITIONAL_PARAMS="--token=${REGISTER_SA_TOKEN} --server=${REGISTER_SERVER_API}"
       fi
     fi
 }
 
 create_service_account() {
 # we need to delete the bindings since we cannot change the roleRef of the existing bindings
-if [[ -n `oc get rolebinding ${SA_NAME} 2>/dev/null` ]]; then
+if [[ -n `oc get rolebinding ${SA_NAME} ${OC_ADDITIONAL_PARAMS} 2>/dev/null` ]]; then
     oc delete rolebinding ${SA_NAME} -n ${OPERATOR_NS} ${OC_ADDITIONAL_PARAMS}
 fi
 
@@ -145,7 +145,7 @@ EOF
 create_service_account_e2e() {
 CLUSTER_ROLE_BINDING_NAME=${SA_NAME}-${OPERATOR_NS}
 # we need to delete the binding since we cannot change the roleRef of the existing binding
-if [[ -n `oc get ClusterRoleBinding ${CLUSTER_ROLE_BINDING_NAME} 2>/dev/null` ]]; then
+if [[ -n `oc get ClusterRoleBinding ${CLUSTER_ROLE_BINDING_NAME} ${OC_ADDITIONAL_PARAMS} 2>/dev/null` ]]; then
     oc delete ClusterRoleBinding ${CLUSTER_ROLE_BINDING_NAME} ${OC_ADDITIONAL_PARAMS}
 fi
 echo "Creating SA ${SA_NAME}"
